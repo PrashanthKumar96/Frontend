@@ -1,0 +1,88 @@
+Creating a React manager dashboard with a list of employees on the left side and a calendar showing color-coded leave types for the selected employee on the right side is a multi-component task. Below is a simplified example to help you get started. Please note that this is a basic demonstration, and you can expand and customize it according to your specific needs.
+
+First, you'd want to create your components. Here, we'll have an `EmployeeList` component and a `Calendar` component.
+
+```jsx
+// EmployeeList.js
+import React, { useState } from 'react';
+
+const EmployeeList = ({ employees, onSelectEmployee }) => {
+  return (
+    <div>
+      <h2>Employee List</h2>
+      <ul>
+        {employees.map((employee, index) => (
+          <li key={index} onClick={() => onSelectEmployee(employee)}>
+            {employee.name}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default EmployeeList;
+```
+
+```jsx
+// Calendar.js
+import React from 'react';
+
+const Calendar = ({ selectedEmployee }) => {
+  // For simplicity, let's assume selectedEmployee contains leave data in the format { date: '2023-09-15', leaveType: 'vacation' }
+  
+  return (
+    <div>
+      <h2>Calendar for {selectedEmployee.name}</h2>
+      <div className="calendar">
+        {/* Render a calendar grid here */}
+        {selectedEmployee.leaves.map((leave, index) => (
+          <div
+            key={index}
+            style={{ backgroundColor: getColorForLeaveType(leave.leaveType) }}
+          >
+            {leave.date}: {leave.leaveType}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Calendar;
+```
+
+You would also need a function `getColorForLeaveType` to assign colors based on leave types. You can define this function in a separate utility file or directly in your component file.
+
+Now, in your main application component, you can use these components:
+
+```jsx
+import React, { useState } from 'react';
+import EmployeeList from './EmployeeList';
+import Calendar from './Calendar';
+
+const App = () => {
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+
+  // Sample employee and leave data
+  const employees = [
+    { name: 'Employee 1', leaves: [{ date: '2023-09-15', leaveType: 'vacation' }] },
+    { name: 'Employee 2', leaves: [{ date: '2023-09-16', leaveType: 'sick' }] },
+  ];
+
+  const onSelectEmployee = (employee) => {
+    setSelectedEmployee(employee);
+  };
+
+  return (
+    <div className="app">
+      <EmployeeList employees={employees} onSelectEmployee={onSelectEmployee} />
+      {selectedEmployee && <Calendar selectedEmployee={selectedEmployee} />}
+    </div>
+  );
+};
+
+export default App;
+```
+
+In this example, we have a simple React application that allows you to select an employee from the list on the left, and the calendar on the right side will display the selected employee's leaves with color-coding based on leave types. You can expand this example by adding more features and integrating real data as needed.
