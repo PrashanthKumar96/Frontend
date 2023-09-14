@@ -143,6 +143,37 @@ export default ExpenseHistory;
 .expense-details {
   display: inline-block;
   margin-right: 16px; /* Adjust the spacing between details as needed */
-}
+}import React from 'react';
+
+const ExpenseCard = ({ expense }) => {
+  return (
+    <div className={`expense-card ${expense.status.toLowerCase()}`}>
+      <div className="expense-details">
+        <div className="expense-date">{expense.date}</div>
+        <div className="expense-description">{expense.description}</div>
+        <div className="expense-category">{expense.category}</div>
+        <div className="expense-amount">${expense.amount}</div>
+        <div className="expense-status">{expense.status}</div>
+      </div>
+      {/* Add thumbnail image here if needed */}
+    </div>
+  );
+};
+
+const ExpenseHistory = ({ expenses }) => {
+  return (
+    <div className="expense-history">
+      <h1>Expense History</h1>
+      <div className="expense-card-container">
+        {expenses.map((expense) => (
+          <ExpenseCard key={expense.id} expense={expense} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ExpenseHistory;
+
 
 In this example, we've created an `ExpenseHistory` component that fetches simulated expense data and displays it using the `ExpenseCard` component. The `ExpenseCard` component provides a card-based layout with hover effects and animations. You can further customize the styling and data integration to suit your specific needs.
