@@ -84,5 +84,47 @@ const App = () => {
 
 export default App;
 ```
+//////
+// Calendar.js
+import React from 'react';
+
+// Define a function to get colors based on leave types
+const getColorForLeaveType = (leaveType) => {
+  switch (leaveType) {
+    case 'vacation':
+      return 'green'; // You can set your own color codes here
+    case 'sick':
+      return 'red';
+    case 'personal':
+      return 'blue';
+    // Add more cases for different leave types
+    default:
+      return 'gray'; // Default color
+  }
+};
+
+const Calendar = ({ selectedEmployee }) => {
+  // For simplicity, let's assume selectedEmployee contains leave data in the format { date: '2023-09-15', leaveType: 'vacation' }
+  
+  return (
+    <div>
+      <h2>Calendar for {selectedEmployee.name}</h2>
+      <div className="calendar">
+        {/* Render a calendar grid here */}
+        {selectedEmployee.leaves.map((leave, index) => (
+          <div
+            key={index}
+            style={{ backgroundColor: getColorForLeaveType(leave.leaveType) }}
+          >
+            {leave.date}: {leave.leaveType}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Calendar;
+
 
 In this example, we have a simple React application that allows you to select an employee from the list on the left, and the calendar on the right side will display the selected employee's leaves with color-coding based on leave types. You can expand this example by adding more features and integrating real data as needed.
