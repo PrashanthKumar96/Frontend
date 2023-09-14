@@ -130,5 +130,19 @@ const ExpenseHistory = () => {
 
 export default ExpenseHistory;
 ```
+.expense-card {
+  /* Your existing styles here */
+}
+
+.expense-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px; /* Adjust the gap between cards as needed */
+}
+
+.expense-details {
+  display: inline-block;
+  margin-right: 16px; /* Adjust the spacing between details as needed */
+}
 
 In this example, we've created an `ExpenseHistory` component that fetches simulated expense data and displays it using the `ExpenseCard` component. The `ExpenseCard` component provides a card-based layout with hover effects and animations. You can further customize the styling and data integration to suit your specific needs.
