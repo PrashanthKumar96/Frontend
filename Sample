@@ -1,0 +1,134 @@
+Certainly! Here's a complete example of a React-based expense history display using a card-based layout with hover effects and animations. Please note that this is a simplified example, and you'll need to adapt it to your project's structure and styling preferences.
+
+First, create a new React component for the ExpenseCard:
+
+```jsx
+import React from 'react';
+
+const ExpenseCard = ({ expense }) => {
+  return (
+    <div className="expense-card">
+      <div className="expense-details">
+        <div className="expense-date">{expense.date}</div>
+        <div className="expense-description">{expense.description}</div>
+        <div className="expense-category">{expense.category}</div>
+        <div className="expense-amount">${expense.amount}</div>
+        <div className={`expense-status ${expense.status.toLowerCase()}`}>
+          {expense.status}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ExpenseCard;
+```
+
+Next, add some basic CSS to style the ExpenseCard and apply hover effects:
+
+```css
+/* ExpenseCard.css */
+
+.expense-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 8px;
+  transition: transform 0.2s ease-in-out;
+  background-color: white;
+}
+
+.expense-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.expense-details {
+  font-family: Arial, sans-serif;
+}
+
+.expense-date {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.expense-status {
+  font-size: 0.9rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.approved {
+  background-color: #28a745; /* Green for approved expenses */
+}
+
+.pending {
+  background-color: #ffc107; /* Yellow for pending expenses */
+}
+
+.rejected {
+  background-color: #dc3545; /* Red for rejected expenses */
+}
+```
+
+Now, integrate the ExpenseCard component into your expense history view:
+
+```jsx
+import React, { useState, useEffect } from 'react';
+import ExpenseCard from './ExpenseCard'; // Import the ExpenseCard component
+
+const ExpenseHistory = () => {
+  const [expenseHistory, setExpenseHistory] = useState([]);
+
+  useEffect(() => {
+    // Simulated expense data (replace with actual API call)
+    const simulatedData = [
+      {
+        id: 1,
+        date: '2023-09-15',
+        description: 'Dinner with clients',
+        category: 'Business',
+        amount: 75.0,
+        status: 'Approved',
+      },
+      {
+        id: 2,
+        date: '2023-09-14',
+        description: 'Office supplies',
+        category: 'Office',
+        amount: 50.0,
+        status: 'Pending',
+      },
+      {
+        id: 3,
+        date: '2023-09-13',
+        description: 'Hotel stay',
+        category: 'Travel',
+        amount: 200.0,
+        status: 'Rejected',
+      },
+    ];
+
+    setExpenseHistory(simulatedData);
+  }, []);
+
+  return (
+    <div className="expense-history">
+      <h1>Expense History</h1>
+      <div className="expense-card-container">
+        {expenseHistory.map((expense) => (
+          <ExpenseCard key={expense.id} expense={expense} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ExpenseHistory;
+```
+
+In this example, we've created an `ExpenseHistory` component that fetches simulated expense data and displays it using the `ExpenseCard` component. The `ExpenseCard` component provides a card-based layout with hover effects and animations. You can further customize the styling and data integration to suit your specific needs.
