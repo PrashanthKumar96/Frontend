@@ -175,5 +175,103 @@ const ExpenseHistory = ({ expenses }) => {
 
 export default ExpenseHistory;
 
+import React, { useState } from 'react';
+
+function ManagerDashboard() {
+  // Sample data representing new employee reimbursement requests
+  const [requests, setRequests] = useState([
+    {
+      id: 1,
+      employeeName: 'John Doe',
+      submissionDate: '2023-09-15',
+      expenseDate: '2023-09-10',
+      receiptUrl: 'url-to-receipt-image-1.jpg', // Replace with actual image URLs
+      description: 'Business trip expenses',
+      status: 'Pending',
+    },
+    {
+      id: 2,
+      employeeName: 'Jane Smith',
+      submissionDate: '2023-09-14',
+      expenseDate: '2023-09-12',
+      receiptUrl: 'url-to-receipt-image-2.jpg', // Replace with actual image URLs
+      description: 'Office supplies purchase',
+      status: 'Pending',
+    },
+    // Add more requests here
+  ]);
+
+  const [selectedRequest, setSelectedRequest] = useState(null);
+
+  // Function to handle clicking the "View Details" button
+  const handleViewDetails = (request) => {
+    setSelectedRequest(request);
+  };
+
+  // Function to handle approval of a request
+  const handleApprove = () => {
+    // Perform approval logic here (e.g., update the request status)
+    // You may want to update the requests array with the new status
+    setSelectedRequest({ ...selectedRequest, status: 'Approved' });
+  };
+
+  // Function to handle rejection of a request
+  const handleReject = () => {
+    // Perform rejection logic here (e.g., update the request status)
+    // You may want to update the requests array with the new status
+    setSelectedRequest({ ...selectedRequest, status: 'Rejected' });
+  };
+
+  // Function to close the details modal
+  const handleCloseDetails = () => {
+    setSelectedRequest(null);
+  };
+
+  return (
+    <div>
+      <h1>Manager Dashboard</h1>
+      <table>
+        {/* ... Same table structure as before */}
+        <tbody>
+          {requests.map((request) => (
+            <tr key={request.id}>
+              {/* ... Same table columns as before */}
+              <td>
+                <button onClick={() => handleViewDetails(request)}>View Details</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Modal to display full details */}
+      {selectedRequest && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={handleCloseDetails}>
+              &times;
+            </span>
+            <h2>Request Details</h2>
+            <p>Expense ID: {selectedRequest.id}</p>
+            <p>Employee Name: {selectedRequest.employeeName}</p>
+            <p>Submission Date: {selectedRequest.submissionDate}</p>
+            <p>Expense Date: {selectedRequest.expenseDate}</p>
+            <p>Description: {selectedRequest.description}</p>
+            <p>Receipt:</p>
+            <img src={selectedRequest.receiptUrl} alt="Receipt" />
+            <div>
+              <button onClick={handleApprove}>Approve</button>
+              <button onClick={handleReject}>Reject</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default ManagerDashboard;
+
+
 
 In this example, we've created an `ExpenseHistory` component that fetches simulated expense data and displays it using the `ExpenseCard` component. The `ExpenseCard` component provides a card-based layout with hover effects and animations. You can further customize the styling and data integration to suit your specific needs.
