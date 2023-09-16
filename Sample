@@ -1,277 +1,85 @@
-Certainly! Here's a complete example of a React-based expense history display using a card-based layout with hover effects and animations. Please note that this is a simplified example, and you'll need to adapt it to your project's structure and styling preferences.
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
-First, create a new React component for the ExpenseCard:
+// Sample expense data
+const initialExpenses = [
+  { id: 1, title: 'Expense 1', amount: 100, status: 'Pending' },
+  { id: 2, title: 'Expense 2', amount: 200, status: 'Approved' },
+  // Add more expenses as needed
+];
 
-```jsx
-import React from 'react';
-
-const ExpenseCard = ({ expense }) => {
+function ExpenseCard({ expense }) {
   return (
     <div className="expense-card">
-      <div className="expense-details">
-        <div className="expense-date">{expense.date}</div>
-        <div className="expense-description">{expense.description}</div>
-        <div className="expense-category">{expense.category}</div>
-        <div className="expense-amount">${expense.amount}</div>
-        <div className={`expense-status ${expense.status.toLowerCase()}`}>
-          {expense.status}
-        </div>
-      </div>
+      <h3>{expense.title}</h3>
+      <p>Amount: ${expense.amount}</p>
+      <p>Status: {expense.status}</p>
+      <Link to={`/details/${expense.id}`}>View Details</Link>
     </div>
   );
-};
-
-export default ExpenseCard;
-```
-
-Next, add some basic CSS to style the ExpenseCard and apply hover effects:
-
-```css
-/* ExpenseCard.css */
-
-.expense-card {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 8px;
-  transition: transform 0.2s ease-in-out;
-  background-color: white;
 }
 
-.expense-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-}
+function ExpenseDetails({ expense, onUpdateStatus }) {
+  const [newStatus, setNewStatus] = useState(expense.status);
 
-.expense-details {
-  font-family: Arial, sans-serif;
-}
-
-.expense-date {
-  font-weight: bold;
-  font-size: 1.2rem;
-}
-
-.expense-status {
-  font-size: 0.9rem;
-  padding: 4px 8px;
-  border-radius: 4px;
-  color: white;
-  text-align: center;
-  margin-top: 8px;
-}
-
-.approved {
-  background-color: #28a745; /* Green for approved expenses */
-}
-
-.pending {
-  background-color: #ffc107; /* Yellow for pending expenses */
-}
-
-.rejected {
-  background-color: #dc3545; /* Red for rejected expenses */
-}
-```
-
-Now, integrate the ExpenseCard component into your expense history view:
-
-```jsx
-import React, { useState, useEffect } from 'react';
-import ExpenseCard from './ExpenseCard'; // Import the ExpenseCard component
-
-const ExpenseHistory = () => {
-  const [expenseHistory, setExpenseHistory] = useState([]);
-
-  useEffect(() => {
-    // Simulated expense data (replace with actual API call)
-    const simulatedData = [
-      {
-        id: 1,
-        date: '2023-09-15',
-        description: 'Dinner with clients',
-        category: 'Business',
-        amount: 75.0,
-        status: 'Approved',
-      },
-      {
-        id: 2,
-        date: '2023-09-14',
-        description: 'Office supplies',
-        category: 'Office',
-        amount: 50.0,
-        status: 'Pending',
-      },
-      {
-        id: 3,
-        date: '2023-09-13',
-        description: 'Hotel stay',
-        category: 'Travel',
-        amount: 200.0,
-        status: 'Rejected',
-      },
-    ];
-
-    setExpenseHistory(simulatedData);
-  }, []);
-
-  return (
-    <div className="expense-history">
-      <h1>Expense History</h1>
-      <div className="expense-card-container">
-        {expenseHistory.map((expense) => (
-          <ExpenseCard key={expense.id} expense={expense} />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export default ExpenseHistory;
-```
-.expense-card {
-  /* Your existing styles here */
-}
-
-.expense-card-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px; /* Adjust the gap between cards as needed */
-}
-
-.expense-details {
-  display: inline-block;
-  margin-right: 16px; /* Adjust the spacing between details as needed */
-}import React from 'react';
-
-const ExpenseCard = ({ expense }) => {
-  return (
-    <div className={`expense-card ${expense.status.toLowerCase()}`}>
-      <div className="expense-details">
-        <div className="expense-date">{expense.date}</div>
-        <div className="expense-description">{expense.description}</div>
-        <div className="expense-category">{expense.category}</div>
-        <div className="expense-amount">${expense.amount}</div>
-        <div className="expense-status">{expense.status}</div>
-      </div>
-      {/* Add thumbnail image here if needed */}
-    </div>
-  );
-};
-
-const ExpenseHistory = ({ expenses }) => {
-  return (
-    <div className="expense-history">
-      <h1>Expense History</h1>
-      <div className="expense-card-container">
-        {expenses.map((expense) => (
-          <ExpenseCard key={expense.id} expense={expense} />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export default ExpenseHistory;
-
-import React, { useState } from 'react';
-
-function ManagerDashboard() {
-  // Sample data representing new employee reimbursement requests
-  const [requests, setRequests] = useState([
-    {
-      id: 1,
-      employeeName: 'John Doe',
-      submissionDate: '2023-09-15',
-      expenseDate: '2023-09-10',
-      receiptUrl: 'url-to-receipt-image-1.jpg', // Replace with actual image URLs
-      description: 'Business trip expenses',
-      status: 'Pending',
-    },
-    {
-      id: 2,
-      employeeName: 'Jane Smith',
-      submissionDate: '2023-09-14',
-      expenseDate: '2023-09-12',
-      receiptUrl: 'url-to-receipt-image-2.jpg', // Replace with actual image URLs
-      description: 'Office supplies purchase',
-      status: 'Pending',
-    },
-    // Add more requests here
-  ]);
-
-  const [selectedRequest, setSelectedRequest] = useState(null);
-
-  // Function to handle clicking the "View Details" button
-  const handleViewDetails = (request) => {
-    setSelectedRequest(request);
+  const handleStatusChange = (e) => {
+    setNewStatus(e.target.value);
   };
 
-  // Function to handle approval of a request
-  const handleApprove = () => {
-    // Perform approval logic here (e.g., update the request status)
-    // You may want to update the requests array with the new status
-    setSelectedRequest({ ...selectedRequest, status: 'Approved' });
-  };
-
-  // Function to handle rejection of a request
-  const handleReject = () => {
-    // Perform rejection logic here (e.g., update the request status)
-    // You may want to update the requests array with the new status
-    setSelectedRequest({ ...selectedRequest, status: 'Rejected' });
-  };
-
-  // Function to close the details modal
-  const handleCloseDetails = () => {
-    setSelectedRequest(null);
+  const handleSubmit = () => {
+    onUpdateStatus(expense.id, newStatus);
   };
 
   return (
-    <div>
-      <h1>Manager Dashboard</h1>
-      <table>
-        {/* ... Same table structure as before */}
-        <tbody>
-          {requests.map((request) => (
-            <tr key={request.id}>
-              {/* ... Same table columns as before */}
-              <td>
-                <button onClick={() => handleViewDetails(request)}>View Details</button>
-              </td>
-            </tr>
+    <div className="expense-details">
+      <h2>{expense.title}</h2>
+      <p>Amount: ${expense.amount}</p>
+      <p>Status: {expense.status}</p>
+      <div>
+        <label htmlFor="status">Change Status:</label>
+        <select id="status" value={newStatus} onChange={handleStatusChange}>
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Denied">Denied</option>
+        </select>
+        <button onClick={handleSubmit}>Submit</button>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [expenses, setExpenses] = useState(initialExpenses);
+
+  const updateExpenseStatus = (id, newStatus) => {
+    const updatedExpenses = expenses.map((expense) =>
+      expense.id === id ? { ...expense, status: newStatus } : expense
+    );
+    setExpenses(updatedExpenses);
+  };
+
+  return (
+    <Router>
+      <div className="App">
+        <h1>Expense Management</h1>
+        <Route exact path="/">
+          {expenses.map((expense) => (
+            <ExpenseCard key={expense.id} expense={expense} />
           ))}
-        </tbody>
-      </table>
-
-      {/* Modal to display full details */}
-      {selectedRequest && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={handleCloseDetails}>
-              &times;
-            </span>
-            <h2>Request Details</h2>
-            <p>Expense ID: {selectedRequest.id}</p>
-            <p>Employee Name: {selectedRequest.employeeName}</p>
-            <p>Submission Date: {selectedRequest.submissionDate}</p>
-            <p>Expense Date: {selectedRequest.expenseDate}</p>
-            <p>Description: {selectedRequest.description}</p>
-            <p>Receipt:</p>
-            <img src={selectedRequest.receiptUrl} alt="Receipt" />
-            <div>
-              <button onClick={handleApprove}>Approve</button>
-              <button onClick={handleReject}>Reject</button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+        </Route>
+        <Route
+          path="/details/:id"
+          render={({ match }) => {
+            const id = parseInt(match.params.id);
+            const expense = expenses.find((e) => e.id === id);
+            return (
+              <ExpenseDetails expense={expense} onUpdateStatus={updateExpenseStatus} />
+            );
+          }}
+        />
+      </div>
+    </Router>
   );
 }
 
-export default ManagerDashboard;
-
-
-
-In this example, we've created an `ExpenseHistory` component that fetches simulated expense data and displays it using the `ExpenseCard` component. The `ExpenseCard` component provides a card-based layout with hover effects and animations. You can further customize the styling and data integration to suit your specific needs.
+export default App;
