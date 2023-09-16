@@ -221,3 +221,171 @@ function Details({ activeTab }) {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+To fetch data from a Spring Boot backend endpoint and display it in a React application using cards and a details component, you can follow these steps:
+
+**Step 1: Create a Spring Boot Backend**
+
+1. Create a Spring Boot application that exposes an endpoint to retrieve expense data as JSON. You can use Spring MVC to create a RESTful endpoint.
+
+   Here's a simplified example of a Spring Boot controller:
+
+   ```java
+   @RestController
+   @RequestMapping("/expenses")
+   public class ExpenseController {
+
+       @GetMapping("/list")
+       public List<Expense> getAllExpenses() {
+           // Replace this with your logic to fetch and return expense data from a database or other source
+           List<Expense> expenses = // Fetch expenses
+           return expenses;
+       }
+   }
+   ```
+
+   In this example, `/expenses/list` is the endpoint that returns a list of `Expense` objects as JSON.
+
+**Step 2: Create a React Frontend**
+
+1. Set up a React frontend project.
+
+2. Use a library like Axios or the built-in `fetch` API to make an HTTP GET request to the Spring Boot endpoint and retrieve the JSON data.
+
+   ```jsx
+   import React, { useEffect, useState } from 'react';
+   import ExpenseCard from './ExpenseCard';
+
+   function Expenses() {
+     const [expenses, setExpenses] = useState([]);
+
+     useEffect(() => {
+       // Make a GET request to the Spring Boot endpoint
+       fetch('/expenses/list')
+         .then((response) => response.json())
+         .then((data) => setExpenses(data))
+         .catch((error) => console.error('Error fetching expenses:', error));
+     }, []);
+
+     return (
+       <div>
+         <h2>Expense Requests</h2>
+         <div className="expense-card-list">
+           {expenses.map((expense) => (
+             <ExpenseCard key={expense.id} expense={expense} />
+           ))}
+         </div>
+       </div>
+     );
+   }
+
+   export default Expenses;
+   ```
+
+   In this React component, we use the `fetch` API to make an HTTP GET request to `/expenses/list`, and when the data is received, it is stored in the `expenses` state variable.
+
+3. Create an `ExpenseCard` component to display each expense as a card. The `ExpenseCard` component will receive an `expense` object as a prop and render the details.
+
+   ```jsx
+   import React from 'react';
+
+   function ExpenseCard({ expense }) {
+     return (
+       <div className="expense-card">
+         <h3>{expense.title}</h3>
+         <p>Amount: {expense.amount}</p>
+         {/* Add more details as needed */}
+       </div>
+     );
+   }
+
+   export default ExpenseCard;
+   ```
+
+4. Style your components and cards as needed using CSS or a CSS framework to make them visually appealing.
+
+**Step 3: Route to Expenses Component**
+
+If you want to navigate to the `Expenses` component when clicking on an "Expense Request" link or button, you can use React Router to set up routing in your React application.
+
+1. Install React Router if you haven't already:
+
+   ```bash
+   npm install react-router-dom
+   ```
+
+2. Set up routing in your main `App` component. Define routes for your different components.
+
+   ```jsx
+   import React from 'react';
+   import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+   import Expenses from './Expenses';
+
+   function App() {
+     return (
+       <Router>
+         <div className="App">
+           <Switch>
+             <Route path="/expenses" component={Expenses} />
+             {/* Define more routes as needed */}
+           </Switch>
+         </div>
+       </Router>
+     );
+   }
+
+   export default App;
+   ```
+
+3. Add a link or button in your application that navigates to the `/expenses` route.
+
+Now, when you click on the "Expense Request" link or button, your React application will route to the `Expenses` component, fetch and display expense data from the Spring Boot backend, and render it using the `ExpenseCard` component.
+
+
+
+
+
+
+
+import React, { useEffect, useState } from 'react';
+import Axios from 'axios'; // Import Axios
+
+import ExpenseCard from './ExpenseCard';
+
+function Expenses() {
+  const [expenses, setExpenses] = useState([]);
+
+  useEffect(() => {
+    // Make a GET request using Axios to the Spring Boot endpoint
+    Axios.get('/expenses/list')
+      .then((response) => {
+        // Extract the data from the response
+        const data = response.data;
+        setExpenses(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching expenses:', error);
+      });
+  }, []);
+
+  return (
+    <div>
+      <h2>Expense Requests</h2>
+      <div className="expense-card-list">
+        {expenses.map((expense) => (
+          <ExpenseCard key={expense.id} expense={expense} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default Expenses;
