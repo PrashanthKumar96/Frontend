@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 // Sample expense data
 const initialExpenses = [
@@ -8,18 +7,17 @@ const initialExpenses = [
   // Add more expenses as needed
 ];
 
-function ExpenseCard({ expense }) {
+function ExpenseCard({ expense, onCardClick }) {
   return (
-    <div className="expense-card">
+    <div className="expense-card" onClick={() => onCardClick(expense)}>
       <h3>{expense.title}</h3>
       <p>Amount: ${expense.amount}</p>
       <p>Status: {expense.status}</p>
-      <Link to={`/details/${expense.id}`}>View Details</Link>
     </div>
   );
 }
 
-function ExpenseDetails({ expense, onUpdateStatus }) {
+function ExpenseDetailsPage({ expense, onUpdateStatus }) {
   const [newStatus, setNewStatus] = useState(expense.status);
 
   const handleStatusChange = (e) => {
@@ -34,7 +32,6 @@ function ExpenseDetails({ expense, onUpdateStatus }) {
     <div className="expense-details">
       <h2>{expense.title}</h2>
       <p>Amount: ${expense.amount}</p>
-      <p>Status: {expense.status}</p>
       <div>
         <label htmlFor="status">Change Status:</label>
         <select id="status" value={newStatus} onChange={handleStatusChange}>
@@ -48,8 +45,9 @@ function ExpenseDetails({ expense, onUpdateStatus }) {
   );
 }
 
-function App() {
+function Sample() { // Changed the component name to Sample
   const [expenses, setExpenses] = useState(initialExpenses);
+  const [selectedExpense, setSelectedExpense] = useState(null);
 
   const updateExpenseStatus = (id, newStatus) => {
     const updatedExpenses = expenses.map((expense) =>
@@ -59,27 +57,25 @@ function App() {
   };
 
   return (
-    <Router>
-      <div className="App">
-        <h1>Expense Management</h1>
-        <Route exact path="/">
-          {expenses.map((expense) => (
-            <ExpenseCard key={expense.id} expense={expense} />
-          ))}
-        </Route>
-        <Route
-          path="/details/:id"
-          render={({ match }) => {
-            const id = parseInt(match.params.id);
-            const expense = expenses.find((e) => e.id === id);
-            return (
-              <ExpenseDetails expense={expense} onUpdateStatus={updateExpenseStatus} />
-            );
-          }}
-        />
+    <div className="App">
+      <h1>Expense Management</h1>
+      <div className="expense-list">
+        {expenses.map((expense) => (
+          <ExpenseCard
+            key={expense.id}
+            expense={expense}
+            onCardClick={(selectedExpense) => setSelectedExpense(selectedExpense)}
+          />
+        ))}
       </div>
-    </Router>
+      {selectedExpense && (
+        <ExpenseDetailsPage
+          expense={selectedExpense}
+          onUpdateStatus={updateExpenseStatus}
+        />
+      )}
+    </div>
   );
 }
 
-export default App;
+export default Sample; // Export the Sample component
