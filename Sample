@@ -79,3 +79,145 @@ function Sample() { // Changed the component name to Sample
 }
 
 export default Sample; // Export the Sample component
+
+
+
+
+
+
+
+
+
+
+
+
+Creating a 3D pie chart component in React can be achieved using third-party charting libraries. One popular library for creating 3D pie charts is "react-chartjs-2," which is based on Chart.js. Here's how to create a 3D pie chart component using this library:
+
+1. **Install Dependencies**:
+
+   First, you need to install the necessary dependencies:
+
+   ```bash
+   npm install react-chartjs-2 chart.js
+   ```
+
+2. **Create a 3D Pie Chart Component**:
+
+   Create a new React component for your 3D pie chart. Here's a basic example:
+
+   ```jsx
+   import React from 'react';
+   import { Pie } from 'react-chartjs-2';
+
+   const PieChart3D = ({ data, options }) => {
+     return (
+       <div className="pie-chart">
+         <Pie data={data} options={options} />
+       </div>
+     );
+   };
+
+   export default PieChart3D;
+   ```
+
+   In this component:
+   - `Pie` is imported from 'react-chartjs-2'.
+   - The `PieChart3D` component takes `data` and `options` as props, which will be used to customize the chart.
+
+3. **Usage**:
+
+   Now you can use the `PieChart3D` component in your application. Here's an example of how to use it:
+
+   ```jsx
+   import React from 'react';
+   import PieChart3D from './PieChart3D';
+
+   const chartData = {
+     labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+     datasets: [
+       {
+         data: [12, 19, 3, 5, 2, 3],
+         backgroundColor: [
+           'red',
+           'blue',
+           'yellow',
+           'green',
+           'purple',
+           'orange',
+         ],
+       },
+     ],
+   };
+
+   const chartOptions = {
+     responsive: true,
+     plugins: {
+       legend: {
+         position: 'top',
+       },
+       title: {
+         display: true,
+         text: 'Sample 3D Pie Chart',
+       },
+     },
+   };
+
+   function App() {
+     return (
+       <div className="App">
+         <PieChart3D data={chartData} options={chartOptions} />
+       </div>
+     );
+   }
+
+   export default App;
+   ```
+
+   In this example, we import the `PieChart3D` component and pass it data and options to customize the 3D pie chart.
+
+4. **Styling**:
+
+   You can add CSS styles to the `pie-chart` class to customize the appearance of the chart as needed.
+
+5. **Further Customization**:
+
+   Chart.js and react-chartjs-2 provide extensive options for customizing charts further. You can adjust colors, labels, tooltips, and more according to your requirements. Refer to the Chart.js documentation for more details: https://www.chartjs.org/docs/latest/.
+
+By following these steps, you can create a 3D pie chart component in React using the react-chartjs-2 library and customize it to display your data effectively.
+
+
+
+
+
+
+
+
+
+
+function Header() {
+  const [activeTab, setActiveTab] = useState('Expenses');
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
+
+  return (
+    <div>
+      <button onClick={() => handleTabClick('Expenses')}>Expenses</button>
+      <button onClick={() => handleTabClick('Charts')}>Charts</button>
+    </div>
+  );
+}
+function Details({ activeTab }) {
+  return (
+    <div>
+      {activeTab === 'Expenses' ? (
+        // Render the list of expense cards
+        <ExpenseCardList />
+      ) : (
+        // Render the pie chart
+        <PieChart />
+      )}
+    </div>
+  );
+}
