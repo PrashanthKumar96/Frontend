@@ -1,4 +1,4 @@
-Certainly, here's a complete React application with the functionality you described:
+toCertainly, here's a complete React application with the functionality you described:
 
 ```jsx
 import React, { useState } from 'react';
@@ -37,18 +37,43 @@ function ExpenseList({ expenses, onCardClick }) {
   );
 }
 
+import React from 'react';
+
 function Filter({ selectedStatus, onFilterChange }) {
   return (
     <div>
-      <select value={selectedStatus} onChange={(e) => onFilterChange(e.target.value)}>
-        <option value="All">All</option>
-        <option value="Approved">Approved</option>
-        <option value="Rejected">Rejected</option>
-        <option value="Pending">Pending</option>
-      </select>
+      <sdf-menu>
+        <sdf-menu-item
+          selected={selectedStatus === "All"}
+          onClick={() => onFilterChange("All")}
+        >
+          All
+        </sdf-menu-item>
+        <sdf-menu-item
+          selected={selectedStatus === "Approved"}
+          onClick={() => onFilterChange("Approved")}
+        >
+          Approved
+        </sdf-menu-item>
+        <sdf-menu-item
+          selected={selectedStatus === "Rejected"}
+          onClick={() => onFilterChange("Rejected")}
+        >
+          Rejected
+        </sdf-menu-item>
+        <sdf-menu-item
+          selected={selectedStatus === "Pending"}
+          onClick={() => onFilterChange("Pending")}
+        >
+          Pending
+        </sdf-menu-item>
+      </sdf-menu>
     </div>
   );
 }
+
+export default Filter;
+
 
 function Wizard({ expense, onStatusChange, onClose }) {
   return (
