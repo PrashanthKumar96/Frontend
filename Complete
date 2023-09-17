@@ -1,0 +1,124 @@
+Certainly, here's a complete React application with the functionality you described:
+
+```jsx
+import React, { useState } from 'react';
+
+// Sample data for expense list
+const expensesData = [
+  { id: 1, status: 'Approved', description: 'Expense 1' },
+  { id: 2, status: 'Pending', description: 'Expense 2' },
+  { id: 3, status: 'Rejected', description: 'Expense 3' },
+];
+
+function ExpenseCard({ expense, onClick }) {
+  return (
+    <div
+      onClick={() => onClick(expense)}
+      style={{ fontWeight: expense.status === 'Pending' ? 'bold' : 'normal' }}
+    >
+      <h3>{expense.description}</h3>
+      <p>Status: {expense.status}</p>
+    </div>
+  );
+}
+
+function ExpenseList({ expenses, onCardClick }) {
+  return (
+    <div>
+      <h2>Expense List</h2>
+      <ul>
+        {expenses.map((expense) => (
+          <li key={expense.id}>
+            <ExpenseCard expense={expense} onClick={onCardClick} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function Filter({ selectedStatus, onFilterChange }) {
+  return (
+    <div>
+      <select value={selectedStatus} onChange={(e) => onFilterChange(e.target.value)}>
+        <option value="All">All</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+        <option value="Pending">Pending</option>
+      </select>
+    </div>
+  );
+}
+
+function Wizard({ expense, onStatusChange, onClose }) {
+  return (
+    <div>
+      <h2>Expense Details</h2>
+      <div>
+        <p>Description: {expense.description}</p>
+        <p>Status: {expense.status}</p>
+      </div>
+      <div>
+        <button onClick={() => onStatusChange('Approved')}>Approve</button>
+        <button onClick={() => onStatusChange('Rejected')}>Reject</button>
+        <button onClick={onClose}>Close</button>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [selectedExpense, setSelectedExpense] = useState(null);
+  const [filterStatus, setFilterStatus] = useState('All');
+  const [expenses, setExpenses] = useState(expensesData);
+
+  const handleCardClick = (expense) => {
+    setSelectedExpense(expense);
+  };
+
+  const handleFilterChange = (newStatus) => {
+    setFilterStatus(newStatus);
+  };
+
+  const handleStatusChange = (newStatus) => {
+    if (selectedExpense) {
+      selectedExpense.status = newStatus;
+      setSelectedExpense({ ...selectedExpense });
+    }
+  };
+
+  const handleCloseWizard = () => {
+    setSelectedExpense(null);
+  };
+
+  const filteredExpenses = filterStatus === 'All'
+    ? expenses
+    : expenses.filter(expense => expense.status === filterStatus);
+
+  return (
+    <div>
+      <Filter selectedStatus={filterStatus} onFilterChange={handleFilterChange} />
+      <ExpenseList expenses={filteredExpenses} onCardClick={handleCardClick} />
+      {selectedExpense && (
+        <Wizard
+          expense={selectedExpense}
+          onStatusChange={handleStatusChange}
+          onClose={handleCloseWizard}
+        />
+      )}
+    </div>
+  );
+}
+
+export default App;
+```
+
+This React application demonstrates the following functionality:
+
+1. Filtering the expense list by status (All, Approved, Rejected, Pending).
+2. Bold highlighting of "Pending" expense cards.
+3. Clicking on an expense card opens the Wizard component to display details.
+4. Changing the status in the Wizard component reflects the change and updates the list.
+5. The Wizard component can be closed to return to the expense list.
+
+You can copy and paste this code into your React application and adjust it to fit your project's structure and styling as needed.
