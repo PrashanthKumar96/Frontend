@@ -1,0 +1,47 @@
+import React, { Component } from 'react';
+import axios from 'axios';
+
+class MyComponent extends Component {
+  constructor() {
+    super();
+    this.state = {
+      data: [],
+      loading: true,
+      error: null,
+    };
+  }
+
+  componentDidMount() {
+    // Make an API request using Axios
+    axios.get('https://api.example.com/data')
+      .then(response => {
+        // Update the state with the fetched data
+        this.setState({ data: response.data, loading: false });
+      })
+      .catch(error => {
+        // Handle any errors that occurred during the request
+        this.setState({ error: error, loading: false });
+      });
+  }
+
+  render() {
+    const { data, loading, error } = this.state;
+
+    return (
+      <div>
+        <h1>My Data</h1>
+        {loading && <p>Loading...</p>}
+        {error && <p>Error: {error.message}</p>}
+        {data.length > 0 && (
+          <ul>
+            {data.map(item => (
+              <li key={item.id}>{item.name}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  }
+}
+
+export default MyComponent;
