@@ -276,3 +276,53 @@ In this modified code:
 - The `handleTabChange` function is called when a tab is clicked to update the active tab.
 
 The rest of the code remains the same, including the routing setup and component rendering based on the active tab. This approach allows you to use your custom `sdf-tab` component for tab navigation while still integrating it with React Router for managing routes and component rendering.
+
+
+
+
+
+
+
+// ExpenseList.js
+import React, { useState } from 'react';
+import { useExpenseContext } from './ExpenseContext';
+
+const ExpenseList = ({ expenses }) => {
+  const { selectExpense } = useExpenseContext();
+  const [selectedCategory, setSelectedCategory] = useState('all'); // State to store the selected category
+
+  const handleExpenseClick = (expense) => {
+    selectExpense(expense);
+  };
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+
+  // Function to filter expenses based on the selected category
+  const filteredExpenses = selectedCategory === 'all' ? expenses : expenses.filter((expense) => expense.category === selectedCategory);
+
+  return (
+    <div>
+      <h2>Expense List</h2>
+      <div>
+        <label htmlFor="category">Filter by Category:</label>
+        <select id="category" onChange={handleCategoryChange} value={selectedCategory}>
+          <option value="all">All Categories</option>
+          <option value="food">Food</option>
+          <option value="transportation">Transportation</option>
+          {/* Add other category options here */}
+        </select>
+      </div>
+      <ul>
+        {filteredExpenses.map((expense) => (
+          <li key={expense.id} onClick={() => handleExpenseClick(expense)}>
+            {expense.name} - {expense.category}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default ExpenseList;
