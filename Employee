@@ -1,0 +1,56 @@
+// TabGroup.js
+import React, { useState } from 'react';
+import TabDetails from './TabDetails';
+
+const TabGroup = () => {
+  const [activeTab, setActiveTab] = useState('expense');
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
+
+  return (
+    <div>
+      <button onClick={() => handleTabClick('expense')}>Expense Tab</button>
+      <button onClick={() => handleTabClick('analytics')}>Analytics Tab</button>
+
+      <TabDetails activeTab={activeTab} />
+    </div>
+  );
+};
+
+export default TabGroup;
+
+// TabDetails.js
+import React from 'react';
+import ExpenseList from './ExpenseList';
+import Analytics from './Analytics';
+
+const TabDetails = ({ activeTab }) => {
+  return (
+    <div>
+      {activeTab === 'expense' && <ExpenseList />}
+      {activeTab === 'analytics' && <Analytics />}
+    </div>
+  );
+};
+
+export default TabDetails;
+
+// ExpenseList.js (Your Expense List Component)
+import React from 'react';
+
+const ExpenseList = () => {
+  return <div>This is the Expense List component.</div>;
+};
+
+export default ExpenseList;
+
+// Analytics.js (Your Analytics Component)
+import React from 'react';
+
+const Analytics = () => {
+  return <div>This is the Analytics component.</div>;
+};
+
+export default Analytics;
