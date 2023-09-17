@@ -54,3 +54,91 @@ const Analytics = () => {
 };
 
 export default Analytics;
+
+
+
+
+
+
+
+
+
+// ExpenseList.js
+import React, { useState } from 'react';
+
+const ExpenseList = ({ onCardClick }) => {
+  const expenses = [
+    { id: 1, title: 'Expense 1', amount: 100 },
+    { id: 2, title: 'Expense 2', amount: 200 },
+    // Add more expense data as needed
+  ];
+
+  return (
+    <div>
+      {expenses.map((expense) => (
+        <div
+          key={expense.id}
+          onClick={() => onCardClick(expense)}
+          className="expense-card"
+        >
+          <h3>{expense.title}</h3>
+          <p>Amount: ${expense.amount}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default ExpenseList;
+
+// TabDetails.js
+import React, { useState } from 'react';
+import ExpenseDetails from './ExpenseDetails';
+
+const TabDetails = ({ activeTab }) => {
+  const [selectedExpense, setSelectedExpense] = useState(null);
+
+  const handleCardClick = (expense) => {
+    setSelectedExpense(expense);
+  };
+
+  const handleBackButtonClick = () => {
+    setSelectedExpense(null);
+  };
+
+  return (
+    <div>
+      {activeTab === 'expense' && (
+        <div>
+          {selectedExpense ? (
+            <ExpenseDetails
+              expense={selectedExpense}
+              onBackButtonClick={handleBackButtonClick}
+            />
+          ) : (
+            <ExpenseList onCardClick={handleCardClick} />
+          )}
+        </div>
+      )}
+      {/* Render other tab content here */}
+    </div>
+  );
+};
+
+export default TabDetails;
+
+// ExpenseDetails.js
+import React from 'react';
+
+const ExpenseDetails = ({ expense, onBackButtonClick }) => {
+  return (
+    <div>
+      <h2>Expense Details</h2>
+      <p>Title: {expense.title}</p>
+      <p>Amount: ${expense.amount}</p>
+      <button onClick={onBackButtonClick}>Back</button>
+    </div>
+  );
+};
+
+export default ExpenseDetails;
