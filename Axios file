@@ -45,3 +45,95 @@ class MyComponent extends Component {
 }
 
 export default MyComponent;
+
+
+
+
+
+To achieve the functionality you described, you can follow these steps using React and Axios:
+
+1. **Fetch Data and Display as Cards:**
+   - Fetch the data from your API endpoint using Axios.
+   - Display the fetched data as a list of cards, each card representing an expense.
+   - Set up a click event handler for each card to show the full details when clicked.
+
+2. **Show Full Details on Card Click:**
+   - Create a component or a modal to display the full details of an expense when a card is clicked.
+   - Pass the relevant data to this component/modal when a card is clicked.
+
+3. **Change Status and Submit:**
+   - Add a form or a dropdown in the details view to change the status (e.g., from "Pending" to "Approved" or "Rejected").
+   - Handle the status change and submission. When the status is changed and the submit button is clicked, use Axios to send a PUT request to update the status of the expense on the server.
+
+4. **Redirect Back to Expense List:**
+   - After successfully updating the status, you can redirect the user back to the expense list.
+   - You can achieve this by using a routing library like React Router or by manipulating the component rendering.
+
+Here's a high-level code structure to give you an idea of how this can be implemented:
+
+```jsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import ExpenseCard from './ExpenseCard'; // Create this component
+import ExpenseDetailsModal from './ExpenseDetailsModal'; // Create this component
+import { useHistory } from 'react-router-dom'; // For redirection
+
+function ExpenseList() {
+  const [expenses, setExpenses] = useState([]);
+  const [selectedExpense, setSelectedExpense] = useState(null);
+  const [newStatus, setNewStatus] = useState('');
+  const history = useHistory();
+
+  useEffect(() => {
+    // Fetch data from the API when the component mounts
+    axios.get('https://api.example.com/expenses')
+      .then(response => {
+        setExpenses(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching expenses:', error);
+      });
+  }, []);
+
+  const handleCardClick = (expense) => {
+    // When a card is clicked, set the selectedExpense state
+    setSelectedExpense(expense);
+  };
+
+  const handleStatusChange = () => {
+    // Send a PUT request to update the status
+    axios.put(`https://api.example.com/expenses/${selectedExpense.id}`, { status: newStatus })
+      .then(response => {
+        // Handle successful status update
+        console.log('Expense status updated:', response.data);
+        // Redirect back to the expense list
+        history.push('/expenselist');
+      })
+      .catch(error => {
+        console.error('Error updating expense status:', error);
+      });
+  };
+
+  return (
+    <div>
+      <h1>Expense List</h1>
+      {expenses.map(expense => (
+        <ExpenseCard key={expense.id} expense={expense} onClick={() => handleCardClick(expense)} />
+      ))}
+      
+      {selectedExpense && (
+        <ExpenseDetailsModal
+          expense={selectedExpense}
+          newStatus={newStatus}
+          onStatusChange={setNewStatus}
+          onSubmit={handleStatusChange}
+        />
+      )}
+    </div>
+  );
+}
+
+export default ExpenseList;
+```
+
+This code assumes you have components like `ExpenseCard` and `ExpenseDetailsModal` to handle the rendering of individual cards and the details modal. Additionally, you'll need to set up React Router for redirection, and ensure that the API endpoints and data structures align with your server's implementation.
