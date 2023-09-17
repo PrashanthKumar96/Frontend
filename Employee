@@ -189,3 +189,90 @@ export default App;
 
 
 
+
+
+
+
+
+
+If you're using a custom `sdf-tab` component to manage tab switching instead of buttons, you can adapt the code accordingly. You'll still need to handle the tab switching logic within the `TabGroup` component and utilize React Router to manage the routes. Here's an example of how you can modify the code:
+
+1. Set up your routing in the `App.js` file as before.
+
+```javascript
+// App.js
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import TabGroup from './TabGroup';
+
+const App = () => {
+  return (
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/tab/expense">Expense Tab</Link>
+            </li>
+            <li>
+              <Link to="/tab/analytics">Analytics Tab</Link>
+            </li>
+          </ul>
+        </nav>
+
+        <Switch>
+          <Route path="/tab/:tabName" component={TabGroup} />
+          <Route path="/" component={TabGroup} />
+        </Switch>
+      </div>
+    </Router>
+  );
+};
+
+export default App;
+```
+
+2. Modify your `TabGroup` component to use the `sdf-tab` component for tab switching:
+
+```javascript
+// TabGroup.js
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import ExpenseList from './ExpenseList';
+import Analytics from './Analytics';
+import TabDetails from './TabDetails';
+
+const TabGroup = () => {
+  const { tabName } = useParams(); // Get the active tab from the URL parameter
+  const [activeTab, setActiveTab] = useState(tabName || 'expense');
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
+  return (
+    <div>
+      <sdf-tab active={activeTab === 'expense'} onClick={() => handleTabChange('expense')}>
+        Expense Tab
+      </sdf-tab>
+      <sdf-tab active={activeTab === 'analytics'} onClick={() => handleTabChange('analytics')}>
+        Analytics Tab
+      </sdf-tab>
+
+      {activeTab === 'expense' && <ExpenseList />}
+      {activeTab === 'analytics' && <Analytics />}
+
+      <TabDetails activeTab={activeTab} />
+    </div>
+  );
+};
+
+export default TabGroup;
+```
+
+In this modified code:
+
+- We use the `sdf-tab` component instead of buttons for tab switching.
+- The `handleTabChange` function is called when a tab is clicked to update the active tab.
+
+The rest of the code remains the same, including the routing setup and component rendering based on the active tab. This approach allows you to use your custom `sdf-tab` component for tab navigation while still integrating it with React Router for managing routes and component rendering.
