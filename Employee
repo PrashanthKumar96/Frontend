@@ -326,3 +326,57 @@ const ExpenseList = ({ expenses }) => {
 };
 
 export default ExpenseList;
+
+
+
+
+
+
+
+// ExpenseList.js
+import React, { useState } from 'react';
+import { useExpenseContext } from './ExpenseContext';
+
+const ExpenseList = ({ expenses }) => {
+  const { selectExpense } = useExpenseContext();
+  const [selectedCategory, setSelectedCategory] = useState('all'); // State to store the selected category
+
+  const handleExpenseClick = (expense) => {
+    selectExpense(expense);
+  };
+
+  const handleCategoryClick = (event) => {
+    setSelectedCategory(event.target.getAttribute('category'));
+  };
+
+  // Function to filter expenses based on the selected category
+  const filteredExpenses = selectedCategory === 'all' ? expenses : expenses.filter((expense) => expense.category === selectedCategory);
+
+  return (
+    <div>
+      <h2>Expense List</h2>
+      <sdf-menu>
+        <sdf-menu-item category="all" onClick={handleCategoryClick}>
+          All Categories
+        </sdf-menu-item>
+        <sdf-menu-item category="food" onClick={handleCategoryClick}>
+          Food
+        </sdf-menu-item>
+        <sdf-menu-item category="transportation" onClick={handleCategoryClick}>
+          Transportation
+        </sdf-menu-item>
+        {/* Add other category options here */}
+      </sdf-menu>
+      <ul>
+        {filteredExpenses.map((expense) => (
+          <li key={expense.id} onClick={() => handleExpenseClick(expense)}>
+            {expense.name} - {expense.category}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default ExpenseList;
+
