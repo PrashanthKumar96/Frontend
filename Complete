@@ -147,3 +147,26 @@ This React application demonstrates the following functionality:
 5. The Wizard component can be closed to return to the expense list.
 
 You can copy and paste this code into your React application and adjust it to fit your project's structure and styling as needed.
+
+
+
+
+
+import axios from 'axios';
+
+// Create an Axios instance with a base URL
+const axiosInstance = axios.create({
+  baseURL: 'https://mockio/v1/02324cdf-2013-4b97-a252-ac7c1fc9382e',
+});
+
+// Make the GET request
+axiosInstance
+  .get('/')
+  .then(response => {
+    // Handle the successful response here
+    console.log(response.data);
+  })
+  .catch(error => {
+    // Handle any errors here
+    console.error(error);
+  });
