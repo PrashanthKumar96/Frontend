@@ -1,0 +1,53 @@
+You can convert your list of expenses into a table and make each table row clickable by wrapping them in `<tr>` elements. Here's how you can modify your components to achieve this:
+
+1. **ExpenseCard.js**: Modify the `ExpenseCard` component to return a table row (`<tr>`) instead of a `<div>`:
+
+```jsx
+function ExpenseCard({ expense, onClick }) {
+  return (
+    <tr onClick={() => onClick(expense)} style={{ fontWeight: expense.status === 'Pending' ? 'bold' : 'normal' }}>
+      <td>{expense.id}</td>
+      <td>{expense.name}</td>
+      <td>{expense.category}</td>
+      <td>{expense.amount}</td>
+      <td>{expense.status}</td>
+      <td className="expense-description">{expense.description}</td>
+    </tr>
+  );
+}
+
+export default ExpenseCard;
+```
+
+2. **EmployeeList.js**: Modify the `EmployeeList` component to use a `<table>` structure, and map your expenses to create table rows:
+
+```jsx
+function EmployeeList({ expenses, onCardClick }) {
+  return (
+    <div>
+      <h2>Expense List</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {expenses.map((expense) => (
+            <ExpenseCard key={expense.id} expense={expense} onClick={onCardClick} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default EmployeeList;
+```
+
+Now, your `ExpenseCard` component returns a `<tr>` element, and your `EmployeeList` component uses a `<table>` to display the expenses as rows. Each row is clickable due to the `onClick` handler you've set in the `ExpenseCard`. When you click on a row, it will trigger the `onCardClick` function with the corresponding `expense` data.
