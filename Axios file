@@ -137,3 +137,25 @@ export default ExpenseList;
 ```
 
 This code assumes you have components like `ExpenseCard` and `ExpenseDetailsModal` to handle the rendering of individual cards and the details modal. Additionally, you'll need to set up React Router for redirection, and ensure that the API endpoints and data structures align with your server's implementation.
+
+
+
+
+
+
+
+
+
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")  // Specify the endpoint(s) you want to allow
+                .allowedOrigins("http://localhost:3000")  // Replace with your React app's URL
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowCredentials(true);
+    }
+}
