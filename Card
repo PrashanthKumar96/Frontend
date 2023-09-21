@@ -1,0 +1,40 @@
+If you don't want an image in your Card component, you can simply remove the `img` element from the previous example. Here's the modified Card component without an image:
+
+```jsx
+import React from 'react';
+
+function Card(props) {
+  return (
+    <div className="card">
+      <div className="card-content">
+        <h2>{props.title}</h2>
+        <p>{props.description}</p>
+      </div>
+    </div>
+  );
+}
+
+export default Card;
+```
+
+Now, you can use this modified Card component without an image in your application as follows:
+
+```jsx
+import React from 'react';
+import Card from './Card'; // Import the Card component
+
+function App() {
+  return (
+    <div>
+      <Card
+        title="Card Title"
+        description="This is a simple card component in React without an image."
+      />
+    </div>
+  );
+}
+
+export default App;
+```
+
+This version of the Card component doesn't include an image, and it will render only the title and description within the card. You can further customize the styling or add any other elements you need within the card content.
