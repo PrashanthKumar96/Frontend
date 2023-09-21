@@ -1,40 +1,38 @@
-If you don't want an image in your Card component, you can simply remove the `img` element from the previous example. Here's the modified Card component without an image:
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-```jsx
-import React from 'react';
+function ImageRetriever() {
+  const [imageUrl, setImageUrl] = useState('');
 
-function Card(props) {
-  return (
-    <div className="card">
-      <div className="card-content">
-        <h2>{props.title}</h2>
-        <p>{props.description}</p>
-      </div>
-    </div>
-  );
-}
+  useEffect(() => {
+    // Make an HTTP GET request to retrieve the image from the endpoint
+    axios.get('your_image_endpoint_url', { responseType: 'blob' })
+      .then((response) => {
+        // Create a URL for the blob data and set it as the image source
+        const objectURL = URL.createObjectURL(response.data);
+        setImageUrl(objectURL);
+      })
+      .catch((error) => {
+        console.error('Image retrieval failed:', error);
+      });
 
-export default Card;
-```
+    // Cleanup function to revoke the object URL when the component unmounts
+    return () => {
+      if (imageUrl) {
+        URL.revokeObjectURL(imageUrl);
+      }
+    };
+  }, []);
 
-Now, you can use this modified Card component without an image in your application as follows:
-
-```jsx
-import React from 'react';
-import Card from './Card'; // Import the Card component
-
-function App() {
   return (
     <div>
-      <Card
-        title="Card Title"
-        description="This is a simple card component in React without an image."
-      />
+      {imageUrl ? (
+        <img src={imageUrl} alt="Retrieved Image" />
+      ) : (
+        <p>Loading image...</p>
+      )}
     </div>
   );
 }
 
-export default App;
-```
-
-This version of the Card component doesn't include an image, and it will render only the title and description within the card. You can further customize the styling or add any other elements you need within the card content.
+export default ImageRetriever;
