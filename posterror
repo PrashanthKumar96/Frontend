@@ -1,98 +1,101 @@
-import React,{useEffect, useState} from 'react'
-import axios from 'axios'; 
-import { useAuth } from './AuthContext';
-import ImageUpload from './ImageUpload';
+react component1
 
+import React, { useState } from "react";
+import axios from "axios";
 
+function ImageUpload() {
+  const [selectedImage, setSelectedImage] = useState(null);
 
+  const handleImageChange = (event) => {
+    setSelectedImage(event.target.files[0]);
+  };
 
+  const expenseId=20
+  const handleUpload = () => {
+    const formData = new FormData();
+    formData.append("file", selectedImage);
 
-export default function TravelExpense2() {
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [expIdImage,setExpIdImage]=useState('')
-
-    var expData = {
-      expId: '',
-      amount:'',
-      approved_date :'',
-      category: '',
-      comments: '',
-      empId: '',
-      
-      image : null,
-      mgrId: '',
-      status : "",
-      submit_date: "",
-      arrvial_city : "",
-       
-      expenseDate: " ",
-     };
-
+    axios.post("http://localhost:9090/employee/saveFile", formData).then((response) => {
+      // Handle the response, e.g., show a success message
+      console.log(response.data);
+    });
     
-     
-    
-    
-
-
-    const {user}=useAuth()
-    
-
-    
-
-    const handleImageChange = (event) => {
-        setSelectedImage(event.target.files[0]);
-      };
-
-
-      
-      const handleUpload = () => {
-        const formData = new FormData();
-        formData.append("file", selectedImage);
-    
-       
-        
-        axios.post("http://localhost:9090/employee/saveFile", formData)
-        .then((response) => {
-          // Handle the response, e.g., show a success message
-          setExpIdImage(response.data)
-        });
-      
-
-
-        
-      };
- 
-      alert("image id"+expIdImage)
-
-      expData.expId=expIdImage
-   
-
-      const [formData,setFormData]=useState(expData);
-      
-     
-const handleInputChange = (e) => {
-    setFormData({...formData,[e.target.name]:e.target.value})
-  }
-
-  alert("form empid"+formData.empId)
-    
-    // Event handler to handle form submission
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      axios.post("http://localhost:9090/employee/createexpense", formData) //send the inputdata to fake api
-      .then((response)=>
-      console.log(response))
-  }
-
+  };
 
   return (
 
-
-
-
-
     <div>
+
+
+<div>
+      <input type="file" label="hello" onChange={handleImageChange} />
+      <button onClick={handleUpload}>Upload Image</button>
+    </div>
       
+      
+    </div>
+  );
+}
+
+export default ImageUpload;
+
+
+
+
+react component2
+
+import React,{useState} from 'react'
+import axios from 'axios'; 
+import ImageUpload from './ImageUpload';
+export default function TravelExpense1() {
+
+    const expData = {
+        expId: '12997',
+        amount:'',
+        approved_date :'',
+        category: '',
+        comments: '',
+        empId: '',
+        
+        image : null,
+        mgrId: '',
+        status : "",
+        submit_date: "",
+        arrvial_city : "",
+         
+        expenseDate: " ",
+       };
+    
+    
+    
+       
+
+  //object to provide value 
+  const [formData,setFormData]=useState(expData);
+
+
+
+ const handleFileUpload = (e) => {
+e.preventDefault()
+ 
+  }
+
+
+    const handleInputChange = (e) => {
+      setFormData({...formData,[e.target.name]:e.target.value})
+    }
+      
+      // Event handler to handle form submission
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        axios.post("http://localhost:9090/employee/createexpense", formData) //send the inputdata to fake api
+        .then((response)=>
+        console.log(response))
+    }
+
+
+
+  return (
       <section data-cvs-id={1467} className="m-6 p-6">
   <h1 data-cvs-id={1468} className="text-heading-06 font-bold my-0">
     Travel Expense Details
@@ -120,25 +123,10 @@ const handleInputChange = (e) => {
     </div>
     <br data-cvs-id={1490} />
 
+   <div>
 
-  
-
-
-
-
-   
-
-    
-    <div>
-      <input type="file" label="hello" onChange={handleImageChange} />
-      <button onClick={handleUpload}>Upload Image</button>
+      <ImageUpload/>
     </div>
-      
-      
-    
-   
-   
-   
 
 
     <br data-cvs-id={1494} />
@@ -170,18 +158,11 @@ const handleInputChange = (e) => {
   </form>
 </section>
 
-      
+
+merge these two react components into a single component .dont merge the the axios methods into one form data as image and expense have seperate api endpoints
 
 
-    </div>
+
   )
 }
-
-
-
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-
 
