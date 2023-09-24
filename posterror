@@ -1,76 +1,86 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
-export default function TravelExpense1() {
-  const expData = {
-    expId: '', // Initialize expId as an empty string
-    amount: '',
-    approved_date: '',
-    category: '',
-    comments: '',
-    empId: '',
-    image: null,
-    mgrId: '',
-    status: '',
-    submit_date: '',
-    arrvial_city: '',
-    expenseDate: '',
-  };
-
-  const [formData, setFormData] = useState(expData);
-  const [expIdImage, setExpIdImage] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imageUploadComplete, setImageUploadComplete] = useState(false);
-
-  // Track expId separately
-  const [expId, setExpId] = useState('');
-
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleImageChange = (event) => {
-    setSelectedImage(event.target.files[0]);
-  };
-
-  const handleUpload = async () => {
-    const formData = new FormData();
-    formData.append('file', selectedImage);
-
-    try {
-      const response = await axios.post('http://localhost:9090/employee/saveFile', formData);
-      setExpIdImage(response.data.imageId);
-      setImageUploadComplete(true);
-      setExpId(response.data.imageId); // Update expId separately
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    // When imageUploadComplete becomes true, update formData
-    if (imageUploadComplete) {
-      // Update formData.expId with the separate expId state
-      setFormData({ ...formData, expId });
-
-      // Continue with form submission
-      handleFormSubmit();
-    }
-  }, [imageUploadComplete, expId]);
-
-  const handleFormSubmit = async () => {
-    try {
-      const response = await axios.post('http://localhost:9090/employee/createexpense', formData);
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  return (
-    <section data-cvs-id={1467} className="m-6 p-6">
-      {/* Rest of your component JSX */}
-    </section>
-  );
+{
+    "1": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "2": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "3": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "4": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "5": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "6": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "7": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "8": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "9": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "10": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "11": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ],
+    "12": [
+        0,
+        0,
+        0,
+        0,
+        0
+    ]
 }
