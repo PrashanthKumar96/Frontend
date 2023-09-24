@@ -70,3 +70,67 @@ export default function TravelExpense1() {
     </section>
   );
 }
+
+
+
+return (
+  <section data-cvs-id={1467} className="m-6 p-6">
+    <h1 data-cvs-id={1468} className="text-heading-06 font-bold my-0">
+      Travel Expense Details
+    </h1>
+    <br data-cvs-id={1469} />
+    <form onSubmit={handleSubmit}>
+      <fieldset data-cvs-id={1470} className="border-none px-0">
+        <div data-cvs-id={1471} className="flex flex-col sm:flex-row gap-4">
+          <label>Transaction Amount</label>
+          <input
+            data-cvs-id={1484}
+            type="text"
+            name="amount"
+            value={formData.amount}
+            onChange={handleInputChange}
+          />
+          <br data-cvs-id={1485} />
+        </div>
+        <br data-cvs-id={1490} />
+        <div>
+          <label>Upload Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+        </div>
+        <br data-cvs-id={1494} />
+        <br data-cvs-id={1495} />
+        <label>Description</label>
+        <br />
+        <textarea
+          data-cvs-id={1496}
+          placeholder="...."
+          name="comments"
+          value={formData.comments}
+          onChange={handleInputChange}
+        ></textarea>
+        <br data-cvs-id={1497} />
+        <br data-cvs-id={1498} />
+        <br data-cvs-id={1499} />
+        <p data-cvs-id={1500}>
+          This cannot be changed in the associate portal after submission.
+        </p>
+        <br data-cvs-id={1501} />
+        <div data-cvs-id={1502} className="space-x-4 mt-16">
+          <sdf-button
+            onClick={handleSubmit}
+            data-cvs-id={1503}
+            emphasis="primary"
+            className="formbutton1"
+            type="submit"
+          >
+            Submit
+          </sdf-button>
+        </div>
+      </fieldset>
+    </form>
+  </section>
+);
