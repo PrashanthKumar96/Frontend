@@ -1,57 +1,94 @@
+import React, { useEffect, useState } from "react";
+import { Chart } from "react-google-charts";
+import axios from "axios";
 
-Certainly! Here's an example of how you can create a React component to upload an image and use Axios to send it to a server. Please note that you'll need to set up a server to handle the image upload on the backend.
+export default function Analytics() {
+  const [categoryData, setCategoryData] = useState({});
+  const [statusData, setStatusData] = useState({});
+  const [selectedMonth, setSelectedMonth] = useState("1"); // Default to month 1
 
-```jsx
-import React, { useState } from 'react';
-import axios from 'axios';
+  useEffect(() => {
+    // Fetch category data
+    axios
+      .get("http://localhost:9091/expense/getByCategory")
+      .then((response) => {
+        console.log(response);
+        setCategoryData(response.data);
+      })
+      .catch((err) => console.log(err));
 
-function ImageUpload() {
-  const [selectedImage, setSelectedImage] = useState(null);
+    // Fetch status data
+    axios
+      .get("http://localhost:9091/expense/getByStatus")
+      .then((response) => {
+        console.log(response);
+        setStatusData(response.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
-  const handleImageChange = (e) => {
-    setSelectedImage(e.target.files[0]);
+  // Update data arrays based on selected month
+  const updateCategoryData = () => {
+    const monthData = categoryData[selectedMonth] || [0, 0, 0, 0, 0];
+    return [
+      ["Category", "Numbers"],
+      ["Category 1", monthData[0]],
+      ["Category 2", monthData[1]],
+      ["Category 3", monthData[2]],
+      ["Category 4", monthData[3]],
+      ["Category 5", monthData[4]],
+    ];
   };
 
-  const handleImageUpload = () => {
-    const formData = new FormData();
-    formData.append('image', selectedImage);
+  const updateStatusData = () => {
+    const monthStatusData = statusData[selectedMonth] || [0, 0, 0];
+    return [
+      ["Status", "Numbers"],
+      ["Approved", monthStatusData[0]],
+      ["Rejected", monthStatusData[1]],
+      ["Pending", monthStatusData[2]],
+    ];
+  };
 
-    axios
-      .post('your_server_url_here', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then((response) => {
-        console.log('Image uploaded successfully', response.data);
-        // Handle any further actions here
-      })
-      .catch((error) => {
-        console.error('Error uploading image', error);
-      });
+  const handleMonthChange = (e) => {
+    setSelectedMonth(e.target.value);
+  };
+
+  const categoryChartData = updateCategoryData();
+  const statusChartData = updateStatusData();
+
+  const options = {
+    title: "Data Analytics",
+    is3D: true,
   };
 
   return (
     <div>
-      <h2>Image Upload</h2>
-      <input type="file" accept="image/*" onChange={handleImageChange} />
-      <button onClick={handleImageUpload}>Upload Image</button>
+      <label>Select Month:</label>
+      <select onChange={handleMonthChange} value={selectedMonth}>
+        <option value="1">Month 1</option>
+        {/* Add more months as needed */}
+      </select>
+      <div>
+        <h2>Category Chart</h2>
+        <Chart
+          chartType="PieChart"
+          data={categoryChartData}
+          options={options}
+          width={"100%"}
+          height={"400px"}
+        />
+      </div>
+      <div>
+        <h2>Status Chart</h2>
+        <Chart
+          chartType="PieChart"
+          data={statusChartData}
+          options={options}
+          width={"100%"}
+          height={"400px"}
+        />
+      </div>
     </div>
   );
 }
-
-export default ImageUpload;
-```
-
-In this code:
-
-1. We create a React component called `ImageUpload`.
-2. It uses the `useState` hook to manage the selected image.
-3. The `handleImageChange` function is called when a user selects an image file.
-4. When the "Upload Image" button is clicked, the `handleImageUpload` function is called.
-5. Inside `handleImageUpload`, we create a `FormData` object to append the selected image file.
-6. We use Axios to make a POST request to your server URL, sending the image data as multipart/form-data.
-7. Replace `'your_server_url_here'` with the actual URL of your server where you want to handle the image upload.
-8. You can handle the response and errors as needed.
-
-Make sure to configure your server to handle this image upload endpoint and store the images appropriately on your server.
