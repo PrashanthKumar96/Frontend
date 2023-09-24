@@ -2,46 +2,53 @@ import React, { useEffect, useState } from "react";
 import { Chart } from "react-google-charts";
 import axios from "axios";
 
+export const options = {
+  title: "Data Analytics",
+  is3D: true,
+};
+
 export default function Analytics() {
-  const [statusData, setStatusData] = useState({});
+  const [categoryData, setCategoryData] = useState("");
+  const [statusData, setStatusData] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("1"); // Default to January
+  const [statusChartData, setStatusChartData] = useState({});
 
   useEffect(() => {
-    // Fetch status data
+    // Fetch data for category and status here
+    axios
+      .get("http://localhost:9091/expense/getByCategory")
+      .then((response) => {
+        setCategoryData(response.data);
+      })
+      .catch((err) => console.log(err));
+
     axios
       .get("http://localhost:9091/expense/getByStatus")
       .then((response) => {
-        console.log(response.data); // Verify the structure of the received data
         setStatusData(response.data);
       })
       .catch((err) => console.log(err));
   }, []);
 
-  // Function to update status data based on the selected month
-  const updateStatusData = (selectedMonth) => {
-    const monthStatusData = statusData[selectedMonth] || [0, 0, 0];
-    return [
-      ["Status", "Numbers"],
-      ["Approved", monthStatusData[0]],
-      ["Rejected", monthStatusData[1]],
-      ["Pending", monthStatusData[2]],
-    ];
-  };
-
-  // Default to display data for month 1
-  const selectedMonth = "1";
-  const statusChartData = updateStatusData(selectedMonth);
-
-  const options = {
-    title: "Status Chart",
-    is3D: true,
-  };
+  useEffect(() => {
+    // Update statusChartData based on the selected month
+    const monthData = statusData[selectedMonth] || [];
+    const data = [["Task", "Numbers"]];
+    data.push(...monthData.map((value, index) => [`Status ${index + 1}`, value]));
+    setStatusChartData({ ...statusChartData, [selectedMonth]: data });
+  }, [selectedMonth, statusData]);
 
   return (
     <div>
       <h2>Status Chart</h2>
+      <select onChange={(e) => setSelectedMonth(e.target.value)} value={selectedMonth}>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        {/* Add options for other months (3 to 12) */}
+      </select>
       <Chart
         chartType="PieChart"
-        data={statusChartData}
+        data={statusChartData[selectedMonth] || []}
         options={options}
         width={"100%"}
         height={"400px"}
