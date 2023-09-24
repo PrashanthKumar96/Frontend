@@ -21,6 +21,7 @@ export default function TravelExpense1() {
   const [formData, setFormData] = useState(expData);
   const [expIdImage, setExpIdImage] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [imageUploadComplete, setImageUploadComplete] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,6 +39,7 @@ export default function TravelExpense1() {
       .post('http://localhost:9090/employee/saveFile', formData)
       .then((response) => {
         setExpIdImage(response.data.imageId); // Assuming imageId is the expId
+        setImageUploadComplete(true);
         console.log(response.data);
       })
       .catch((error) => {
@@ -46,17 +48,17 @@ export default function TravelExpense1() {
   };
 
   useEffect(() => {
-    // When expIdImage changes, update formData
-    if (expIdImage) {
+    // When imageUploadComplete becomes true, update formData
+    if (imageUploadComplete) {
       setFormData({ ...formData, expId: expIdImage });
     }
-  }, [expIdImage]);
+  }, [imageUploadComplete, expIdImage]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Make sure that expIdImage is available before submitting
-    if (expIdImage) {
+    // Make sure that image upload is complete before submitting
+    if (imageUploadComplete) {
       axios
         .post('http://localhost:9090/employee/createexpense', formData)
         .then((response) => {
