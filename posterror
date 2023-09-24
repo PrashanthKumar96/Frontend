@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ImageUpload from './ImageUpload';
 
 export default function TravelExpense1() {
   const expData = {
-    expId: '',
+    expId: '', // Initialize expId as an empty string
     amount: '',
     approved_date: '',
     category: '',
@@ -23,6 +22,9 @@ export default function TravelExpense1() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageUploadComplete, setImageUploadComplete] = useState(false);
 
+  // Track expId separately
+  const [expId, setExpId] = useState('');
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -37,8 +39,9 @@ export default function TravelExpense1() {
 
     try {
       const response = await axios.post('http://localhost:9090/employee/saveFile', formData);
-      setExpIdImage(response.data.imageId); // Assuming imageId is the expId
+      setExpIdImage(response.data.imageId);
       setImageUploadComplete(true);
+      setExpId(response.data.imageId); // Update expId separately
       console.log(response.data);
     } catch (error) {
       console.error(error);
@@ -48,14 +51,15 @@ export default function TravelExpense1() {
   useEffect(() => {
     // When imageUploadComplete becomes true, update formData
     if (imageUploadComplete) {
-      setFormData({ ...formData, expId: expIdImage });
+      // Update formData.expId with the separate expId state
+      setFormData({ ...formData, expId });
 
       // Continue with form submission
-      handleSubmit();
+      handleFormSubmit();
     }
-  }, [imageUploadComplete, expIdImage]);
+  }, [imageUploadComplete, expId]);
 
-  const handleSubmit = async () => {
+  const handleFormSubmit = async () => {
     try {
       const response = await axios.post('http://localhost:9090/employee/createexpense', formData);
       console.log(response);
@@ -70,68 +74,3 @@ export default function TravelExpense1() {
     </section>
   );
 }
-
-
-
-return (
-  <section data-cvs-id={1467} className="m-6 p-6">
-    <h1 data-cvs-id={1468} className="text-heading-06 font-bold my-0">
-      Travel Expense Details
-    </h1>
-    <br data-cvs-id={1469} />
-    <form onSubmit={handleFormSubmit}>
-      <fieldset data-cvs-id={1470} className="border-none px-0">
-        <div data-cvs-id={1471} className="flex flex-col sm:flex-row gap-4">
-          <label>Transaction Amount</label>
-          <input
-            data-cvs-id={1484}
-            type="text"
-            name="amount"
-            value={formData.amount}
-            onChange={handleInputChange}
-          />
-          <br data-cvs-id={1485} />
-        </div>
-        <br data-cvs-id={1490} />
-        <div>
-          <label>Upload Image</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-          <button onClick={handleUpload}>Upload Image</button>
-        </div>
-        <br data-cvs-id={1494} />
-        <br data-cvs-id={1495} />
-        <label>Description</label>
-        <br />
-        <textarea
-          data-cvs-id={1496}
-          placeholder="...."
-          name="comments"
-          value={formData.comments}
-          onChange={handleInputChange}
-        ></textarea>
-        <br data-cvs-id={1497} />
-        <br data-cvs-id={1498} />
-        <br data-cvs-id={1499} />
-        <p data-cvs-id={1500}>
-          This cannot be changed in the associate portal after submission.
-        </p>
-        <br data-cvs-id={1501} />
-        <div data-cvs-id={1502} className="space-x-4 mt-16">
-          <sdf-button
-            onClick={handleFormSubmit}
-            data-cvs-id={1503}
-            emphasis="primary"
-            className="formbutton1"
-            type="submit"
-          >
-            Submit
-          </sdf-button>
-        </div>
-      </fieldset>
-    </form>
-  </section>
-);
