@@ -4,7 +4,7 @@ import ImageUpload from './ImageUpload';
 
 export default function TravelExpense1() {
   const expData = {
-    expId: '12997',
+    expId: '',
     amount: '',
     approved_date: '',
     category: '',
@@ -49,22 +49,18 @@ export default function TravelExpense1() {
     // When imageUploadComplete becomes true, update formData
     if (imageUploadComplete) {
       setFormData({ ...formData, expId: expIdImage });
+
+      // Continue with form submission
+      handleSubmit();
     }
   }, [imageUploadComplete, expIdImage]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Make sure that image upload is complete before submitting
-    if (imageUploadComplete) {
-      try {
-        const response = await axios.post('http://localhost:9090/employee/createexpense', formData);
-        console.log(response);
-      } catch (error) {
-        console.error(error);
-      }
-    } else {
-      console.error('Image upload is not complete, expIdImage is null.');
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post('http://localhost:9090/employee/createexpense', formData);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
     }
   };
 
