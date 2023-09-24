@@ -1,94 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { Chart } from "react-google-charts";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Pie } from 'react-chartjs-2';
 
-export default function Analytics() {
-  const [categoryData, setCategoryData] = useState({});
-  const [statusData, setStatusData] = useState({});
-  const [selectedMonth, setSelectedMonth] = useState("1"); // Default to month 1
+function PieChart() {
+  const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
-    // Fetch category data
-    axios
-      .get("http://localhost:9091/expense/getByCategory")
+    // Make an Axios request to fetch the data
+    axios.get('your_api_endpoint')
       .then((response) => {
-        console.log(response);
-        setCategoryData(response.data);
-      })
-      .catch((err) => console.log(err));
+        const data = response.data; // Assuming your data structure matches the provided JSON
 
-    // Fetch status data
-    axios
-      .get("http://localhost:9091/expense/getByStatus")
-      .then((response) => {
-        console.log(response);
-        setStatusData(response.data);
+        // Process the data to create the chartData
+        const chartData = {
+          labels: ['Pending', 'Approved', 'Rejected'],
+          datasets: [
+            {
+              data: [data.Pending[0], data.Approved[0], data.Rejected[0]],
+              backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+              hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+            },
+          ],
+        };
+
+        setChartData(chartData);
       })
-      .catch((err) => console.log(err));
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
   }, []);
-
-  // Update data arrays based on selected month
-  const updateCategoryData = () => {
-    const monthData = categoryData[selectedMonth] || [0, 0, 0, 0, 0];
-    return [
-      ["Category", "Numbers"],
-      ["Category 1", monthData[0]],
-      ["Category 2", monthData[1]],
-      ["Category 3", monthData[2]],
-      ["Category 4", monthData[3]],
-      ["Category 5", monthData[4]],
-    ];
-  };
-
-  const updateStatusData = () => {
-    const monthStatusData = statusData[selectedMonth] || [0, 0, 0];
-    return [
-      ["Status", "Numbers"],
-      ["Approved", monthStatusData[0]],
-      ["Rejected", monthStatusData[1]],
-      ["Pending", monthStatusData[2]],
-    ];
-  };
-
-  const handleMonthChange = (e) => {
-    setSelectedMonth(e.target.value);
-  };
-
-  const categoryChartData = updateCategoryData();
-  const statusChartData = updateStatusData();
-
-  const options = {
-    title: "Data Analytics",
-    is3D: true,
-  };
 
   return (
     <div>
-      <label>Select Month:</label>
-      <select onChange={handleMonthChange} value={selectedMonth}>
-        <option value="1">Month 1</option>
-        {/* Add more months as needed */}
-      </select>
-      <div>
-        <h2>Category Chart</h2>
-        <Chart
-          chartType="PieChart"
-          data={categoryChartData}
-          options={options}
-          width={"100%"}
-          height={"400px"}
-        />
-      </div>
-      <div>
-        <h2>Status Chart</h2>
-        <Chart
-          chartType="PieChart"
-          data={statusChartData}
-          options={options}
-          width={"100%"}
-          height={"400px"}
-        />
-      </div>
+      <h2>Pie Chart</h2>
+      {chartData ? <Pie data={chartData} /> : <p>Loading data...</p>}
     </div>
   );
 }
+
+export default PieChart;
