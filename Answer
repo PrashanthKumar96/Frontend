@@ -2,33 +2,34 @@ import React, { useState, useEffect } from "react";
 import { Chart } from "react-google-charts";
 import axios from "axios";
 
-export default function MonthlyPieChart() {
-  const [monthData, setMonthData] = useState([]);
+export default function CategoryPieChart() {
+  const [categoryData, setCategoryData] = useState({});
   const [selectedMonth, setSelectedMonth] = useState("1"); // Default to January
 
   useEffect(() => {
     // Fetch data for all months here
     axios
-      .get("YOUR_ENDPOINT_URL_HERE")
+      .get("YOUR_CATEGORY_ENDPOINT_URL_HERE")
       .then((response) => {
-        setMonthData(response.data);
+        setCategoryData(response.data);
       })
       .catch((err) => console.log(err));
   }, []);
 
   const generateChartData = (selectedMonth) => {
     const monthIndex = parseInt(selectedMonth);
-    const data = [["Category", "Value"]];
-    const monthValues = monthData[monthIndex] || [];
-    monthValues.forEach((value, index) => {
-      data.push([`Category ${index + 1}`, value]);
+    const data = [["Category", "Amount"]];
+    const monthValues = categoryData[monthIndex] || [];
+    // Assuming the data format is an array of category amounts
+    monthValues.forEach((amount, index) => {
+      data.push([`Category ${index + 1}`, amount]);
     });
     return data;
   };
 
   return (
     <div>
-      <h2>Monthly Expense Pie Chart</h2>
+      <h2>Category-wise Expense Pie Chart</h2>
       <select onChange={(e) => setSelectedMonth(e.target.value)} value={selectedMonth}>
         <option value="1">January</option>
         <option value="2">February</option>
@@ -47,7 +48,7 @@ export default function MonthlyPieChart() {
         chartType="PieChart"
         data={generateChartData(selectedMonth)}
         options={{
-          title: `Monthly Expense Distribution for Month ${selectedMonth}`,
+          title: `Category-wise Expense Distribution for Month ${selectedMonth}`,
           is3D: true,
         }}
         width={"100%"}
@@ -56,3 +57,4 @@ export default function MonthlyPieChart() {
     </div>
   );
 }
+
