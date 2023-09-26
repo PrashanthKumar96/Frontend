@@ -10,3 +10,68 @@
         "approvedDate": null,
         "submitDate": null
     }
+
+
+If the "amount" field in your response object is not a number but a string, you can modify the `formatToIndianNumberSystem` function to handle it accordingly. Here's how you can do that:
+
+```javascript
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+function YourComponent() {
+  const [expense, setExpense] = useState(null);
+
+  useEffect(() => {
+    // Make an Axios request to fetch the data
+    axios.get('your_api_endpoint_here')
+      .then((response) => {
+        // Assuming response.data is the JSON object you provided
+        const formattedAmount = formatToIndianNumberSystem(response.data.amount);
+        // Create a copy of the original object with the formatted amount
+        const updatedExpense = { ...response.data, amount: formattedAmount };
+        setExpense(updatedExpense);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
+  function formatToIndianNumberSystem(amount) {
+    // Ensure that amount is a valid string representation of a number
+    const numericAmount = parseFloat(amount);
+    if (isNaN(numericAmount)) {
+      return amount; // Return as-is if it's not a valid number
+    }
+
+    return numericAmount.toLocaleString('en-IN', {
+      maximumFractionDigits: 2,
+      style: 'currency',
+      currency: 'INR',
+    }).replace('₹', ''); // Remove the currency symbol
+  }
+
+  return (
+    <div>
+      {expense && (
+        <div>
+          <h2>Expense Details</h2>
+          <p>Amount: {expense.amount}</p>
+          {/* Render other fields from the expense object */}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default YourComponent;
+```
+
+In this updated code:
+
+1. We use `parseFloat` to attempt to convert the "amount" field into a numeric value.
+
+2. If the conversion is successful (i.e., it's a valid number), we format it using `toLocaleString` and replace the currency symbol.
+
+3. If the conversion is not successful (i.e., it's not a valid number), we return the "amount" as-is without formatting.
+
+This code should handle cases where the "amount" is provided as a string that represents a numeric value.
