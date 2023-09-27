@@ -1,3 +1,92 @@
+Certainly, here are the complete `AuthContextProvider.js` and `App.js` files following the latest approach using the `useNavigate` hook for navigation. Please make sure to replace `'YOUR_AUTH_ENDPOINT'` with your actual authentication endpoint.
+
+**AuthContextProvider.js:**
+
+```javascript
+import React, { Component, createContext } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+
+// Create the AuthContext
+const AuthContext = createContext();
+
+class AuthContextProvider extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isAuthenticated: false,
+            user: null,
+            error: null
+        };
+    }
+
+    // Modify the login function to use Axios
+    login = async (userCredentials) => {
+        const navigate = useNavigate(); // Use useNavigate hook
+
+        try {
+            const response = await axios.post('YOUR_AUTH_ENDPOINT', userCredentials);
+
+            if (response.data.user) {
+                this.setState({
+                    isAuthenticated: true,
+                    user: response.data.user,
+                    error: null
+                });
+
+                navigate('/dashboard'); // Use navigate for redirection
+            } else {
+                this.setState({
+                    isAuthenticated: false,
+                    user: null,
+                    error: 'Invalid username or password'
+                });
+
+                navigate('/login');
+            }
+        } catch (error) {
+            console.error(error);
+            this.setState({
+                isAuthenticated: false,
+                user: null,
+                error: 'Authentication failed'
+            });
+
+            navigate('/login');
+        }
+    }
+
+    // Mock logout function for demonstration purposes
+    logout = () => {
+        const navigate = useNavigate(); // Use useNavigate hook
+
+        this.setState({
+            isAuthenticated: false,
+            user: null,
+            error: null
+        });
+
+        navigate('/login');
+    }
+
+    render() {
+        const { isAuthenticated, user, error } = this.state;
+        return (
+            <AuthContext.Provider value={{ isAuthenticated, user, error, login: this.login, logout: this.logout }}>
+                {this.props.children}
+            </AuthContext.Provider>
+        );
+    }
+}
+
+export default AuthContextProvider;
+
+export { AuthContext };
+```
+
+**App.js:**
+
+```javascript
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import AuthContextProvider from './AuthContextProvider'; // Import your AuthContextProvider component
@@ -8,16 +97,10 @@ function App() {
     return (
         <Router>
             <div className="App">
-                {/* Wrap your entire app with AuthContextProvider */}
                 <AuthContextProvider>
                     <Switch>
-                        {/* Route for the login page */}
                         <Route path="/login" component={LoginForm} />
-
-                        {/* Protected route for the dashboard */}
                         <PrivateRoute path="/dashboard" component={Dashboard} />
-
-                        {/* Redirect to the login page for any other routes */}
                         <Redirect from="/" to="/login" />
                     </Switch>
                 </AuthContextProvider>
@@ -26,10 +109,8 @@ function App() {
     );
 }
 
-// A custom PrivateRoute component to protect routes that require authentication
 function PrivateRoute({ component: Component, ...rest }) {
-    // Use the AuthContext to check if the user is authenticated
-    const { isAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated } = useContext(AuthContext); // Use useContext to access AuthContext
 
     return (
         <Route
@@ -46,3 +127,92 @@ function PrivateRoute({ component: Component, ...rest }) {
 }
 
 export default App;
+```
+
+Please ensure that you have the required dependencies installed, including `react`, `react-router-dom`, and `axios`. Also, make sure your project's file structure matches the import paths in the code.
+
+
+
+
+Certainly, here are examples of simplified `LoginForm.js` and `Dashboard.js` components. You can customize these components according to your project's requirements:
+
+**LoginForm.js:**
+
+```javascript
+import React, { useContext, useState } from 'react';
+import { AuthContext } from './AuthContextProvider'; // Import your AuthContext
+
+function LoginForm() {
+    const { login, error } = useContext(AuthContext); // Use AuthContext for authentication
+
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        // Call the login function from AuthContext
+        login({ username, password });
+    };
+
+    return (
+        <div>
+            <h2>Login</h2>
+            <form onSubmit={handleLogin}>
+                <div>
+                    <label htmlFor="username">Username:</label>
+                    <input
+                        type="text"
+                        id="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label htmlFor="password">Password:</label>
+                    <input
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+                <button type="submit">Login</button>
+            </form>
+            {error && <p>{error}</p>}
+        </div>
+    );
+}
+
+export default LoginForm;
+```
+
+**Dashboard.js:**
+
+```javascript
+import React, { useContext } from 'react';
+import { AuthContext } from './AuthContextProvider'; // Import your AuthContext
+
+function Dashboard() {
+    const { user, logout } = useContext(AuthContext); // Use AuthContext for user and logout
+
+    return (
+        <div>
+            <h2>Welcome, {user}</h2>
+            <button onClick={logout}>Logout</button>
+        </div>
+    );
+}
+
+export default Dashboard;
+```
+
+In these components:
+
+- `LoginForm.js` includes a form for user login. It uses the `login` function from `AuthContext` to handle authentication. If there's an error during login, it displays an error message.
+
+- `Dashboard.js` displays a simple welcome message with the user's name and a logout button. It uses the `user` and `logout` functions from `AuthContext`.
+
+Remember to adjust these components according to your project's styling and additional functionality requirements.
