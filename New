@@ -1,50 +1,147 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Chart } from 'react-google-charts';
+Creating an authentication context in a React application involves several steps. You can use libraries like React Context and React Router for managing state and navigation. Here's a simplified example of how you can set up an authentication context, a login page, and navigate to a dashboard based on the response from your endpoint:
 
-function PieChart() {
-  const [chartData, setChartData] = useState(null);
+1. **Create an Auth Context**:
 
-  useEffect(() => {
-    // Make an Axios request to fetch the data
-    axios.get('your_api_endpoint')
-      .then((response) => {
-        const data = response.data; // Assuming your data structure matches the provided JSON
+   First, create an `AuthContext.js` file to manage the authentication state. It might look like this:
 
-        // Create the chartData array
-        const chartData = [
-          ['Category', 'Value'],
-          ['Pending', data.Pending[0]],
-          ['Approved', data.Approved[1]],
-          ['Rejected', data.Rejected[0]],
-        ];
+   ```javascript
+   import React, { createContext, useState, useContext, useEffect } from 'react';
+   import axios from 'axios';
 
-        setChartData(chartData);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
+   // Create the AuthContext
+   const AuthContext = createContext();
 
-  return (
-    <div>
-      <h2>Pie Chart</h2>
-      {chartData ? (
-        <Chart
-          width={'100%'}
-          height={'300px'}
-          chartType="PieChart"
-          loader={<div>Loading Chart</div>}
-          data={chartData}
-          options={{
-            title: 'My Pie Chart',
-          }}
-        />
-      ) : (
-        <p>Loading data...</p>
-      )}
-    </div>
-  );
-}
+   export const useAuth = () => {
+     return useContext(AuthContext);
+   };
 
-export default PieChart;
+   export const AuthProvider = ({ children }) => {
+     const [user, setUser] = useState(null);
+     const [loading, setLoading] = useState(true);
+
+     useEffect(() => {
+       // Check if the user is authenticated when the app loads
+       // Make a request to your endpoint to get user details
+       axios.get('/api/userDetails')
+         .then((response) => {
+           const userDetails = response.data;
+           if (userDetails) {
+             setUser(userDetails);
+           }
+           setLoading(false);
+         })
+         .catch((error) => {
+           console.error('Error:', error);
+           setLoading(false);
+         });
+     }, []);
+
+     const value = {
+       user,
+       setUser,
+       loading,
+     };
+
+     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+   };
+   ```
+
+2. **Create a Login Page**:
+
+   Create a `LoginPage.js` file for your login page. This page allows the user to log in and set the user state if authentication is successful.
+
+   ```javascript
+   import React, { useState } from 'react';
+   import { useAuth } from './AuthContext';
+   import { useHistory } from 'react-router-dom';
+
+   const LoginPage = () => {
+     const { setUser } = useAuth();
+     const [credentials, setCredentials] = useState({ username: '', password: '' });
+     const history = useHistory();
+
+     const handleLogin = () => {
+       // Simulate a login process here, you can use axios to send credentials to your server
+       // If authentication is successful, set the user and navigate to the dashboard
+       if (credentials.username === 'validUsername' && credentials.password === 'validPassword') {
+         setUser({ username: credentials.username });
+         history.push('/dashboard');
+       }
+     };
+
+     return (
+       <div>
+         <h2>Login Page</h2>
+         <input
+           type="text"
+           placeholder="Username"
+           value={credentials.username}
+           onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+         />
+         <input
+           type="password"
+           placeholder="Password"
+           value={credentials.password}
+           onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+         />
+         <button onClick={handleLogin}>Login</button>
+       </div>
+     );
+   };
+
+   export default LoginPage;
+   ```
+
+3. **Create a Dashboard Page**:
+
+   Create a `DashboardPage.js` file for your dashboard page. This page is accessible to authenticated users only.
+
+   ```javascript
+   import React from 'react';
+   import { useAuth } from './AuthContext';
+
+   const DashboardPage = () => {
+     const { user } = useAuth();
+
+     return (
+       <div>
+         <h2>Welcome, {user.username}!</h2>
+         <p>This is your dashboard.</p>
+       </div>
+     );
+   };
+
+   export default DashboardPage;
+   ```
+
+4. **Set Up Routing**:
+
+   In your `App.js`, set up routing using `react-router-dom` to navigate between the login page and the dashboard page. Wrap your app with the `AuthProvider` to provide authentication context.
+
+   ```javascript
+   import React from 'react';
+   import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+   import { AuthProvider } from './AuthContext';
+   import LoginPage from './LoginPage';
+   import DashboardPage from './DashboardPage';
+
+   function App() {
+     return (
+       <AuthProvider>
+         <Router>
+           <Switch>
+             <Route path="/login" component={LoginPage} />
+             <Route path="/dashboard">
+               <DashboardPage />
+             </Route>
+             <Redirect to="/login" />
+           </Switch>
+         </Router>
+       </AuthProvider>
+     );
+   }
+
+   export default App;
+   ```
+
+Now, when a user visits your app, they will be redirected to the login page. After successful login, they will be directed to the dashboard. If not authenticated, they will stay on the login page. Be sure to replace the simulated login logic in `LoginPage.js` with your actual authentication logic using your endpoint.
