@@ -1,86 +1,48 @@
-import React, { Component, createContext } from 'react';
-import axios from 'axios'; // Import Axios for making HTTP requests
-import { withRouter } from 'react-router-dom'; // Assuming you're using React Router for navigation
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import AuthContextProvider from './AuthContextProvider'; // Import your AuthContextProvider component
+import LoginForm from './LoginForm'; // Import your LoginForm component
+import Dashboard from './Dashboard'; // Import your Dashboard component
 
-// Create the AuthContext
-const AuthContext = createContext();
+function App() {
+    return (
+        <Router>
+            <div className="App">
+                {/* Wrap your entire app with AuthContextProvider */}
+                <AuthContextProvider>
+                    <Switch>
+                        {/* Route for the login page */}
+                        <Route path="/login" component={LoginForm} />
 
-class AuthContextProvider extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            isAuthenticated: false,
-            user: null,
-            error: null
-        };
-    }
+                        {/* Protected route for the dashboard */}
+                        <PrivateRoute path="/dashboard" component={Dashboard} />
 
-    // Modify the login function to use Axios
-    login = async (userCredentials) => {
-        try {
-            // Replace 'YOUR_AUTH_ENDPOINT' with your actual authentication endpoint
-            const response = await axios.post('YOUR_AUTH_ENDPOINT', userCredentials);
-
-            // Check if the response contains a user object or is null
-            if (response.data.user) {
-                // Authentication successful
-                this.setState({
-                    isAuthenticated: true,
-                    user: response.data.user,
-                    error: null
-                });
-
-                // Redirect to a protected route
-                this.props.history.push('/dashboard'); // Assuming you have a route named '/dashboard'
-            } else {
-                // Authentication failed
-                this.setState({
-                    isAuthenticated: false,
-                    user: null,
-                    error: 'Invalid username or password'
-                });
-
-                // Redirect to the login page
-                this.props.history.push('/login');
-            }
-        } catch (error) {
-            console.error(error);
-            // Handle any authentication errors here
-            this.setState({
-                isAuthenticated: false,
-                user: null,
-                error: 'Authentication failed'
-            });
-
-            // Redirect to the login page
-            this.props.history.push('/login');
-        }
-    }
-
-    // Mock logout function for demonstration purposes
-    logout = () => {
-        // Perform logout actions here, e.g., clearing tokens, user data, etc.
-        this.setState({
-            isAuthenticated: false,
-            user: null,
-            error: null
-        });
-
-        // Redirect to the login page
-        this.props.history.push('/login');
-    }
-
-    render() {
-        const { isAuthenticated, user, error } = this.state;
-        return (
-            <AuthContext.Provider value={{ isAuthenticated, user, error, login: this.login, logout: this.logout }}>
-                {this.props.children}
-            </AuthContext.Provider>
-        );
-    }
+                        {/* Redirect to the login page for any other routes */}
+                        <Redirect from="/" to="/login" />
+                    </Switch>
+                </AuthContextProvider>
+            </div>
+        </Router>
+    );
 }
 
-// Wrap the AuthContextProvider with withRouter to access history for navigation
-export default withRouter(AuthContextProvider);
+// A custom PrivateRoute component to protect routes that require authentication
+function PrivateRoute({ component: Component, ...rest }) {
+    // Use the AuthContext to check if the user is authenticated
+    const { isAuthenticated } = useContext(AuthContext);
 
-export { AuthContext };
+    return (
+        <Route
+            {...rest}
+            render={(props) =>
+                isAuthenticated ? (
+                    <Component {...props} />
+                ) : (
+                    <Redirect to="/login" />
+                )
+            }
+        />
+    );
+}
+
+export default App;
